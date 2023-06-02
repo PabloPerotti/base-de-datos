@@ -1,0 +1,7 @@
+{
+    "php.validate.enable": true,
+    "php.suggest.basic": true,
+    "CodeGPT.query.language": "Spanish",
+    "CodeGPT.model": "text-davinci-003",
+    "CodeGPT.organizationId": "personal"
+}
