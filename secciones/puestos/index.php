@@ -1,19 +1,19 @@
 <?php
 require_once "../../bd.php";
-    
-    if (isset($_GET["txtID"])) {
-        $txtID=(isset($_GET["txtID"]) ? $_GET["txtID"] : '');
-        $sentencia = $conexion -> prepare("DELETE FROM `tbl_puestos` WHERE `id`=:id");
-        $sentencia ->bindValue(":id", $txtID);
-        $sentencia -> execute();
-        header("location:index.php");
-    }
-    $sentencia=$conexion->prepare("SELECT * FROM `tbl_puestos`");
+
+if (isset($_GET["txtID"])) {
+    $txtID = (isset($_GET["txtID"]) ? $_GET["txtID"] : '');
+    $sentencia = $conexion->prepare("DELETE FROM `tbl_puestos` WHERE `id`=:id");
+    $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
-    $lista_tbl_puestos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-    
+    header("location:index.php");
+}
+$sentencia = $conexion->prepare("SELECT * FROM `tbl_puestos`");
+$sentencia->execute();
+$lista_tbl_puestos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
-<?php 
+<?php
 require_once("../../templates/header.php")
 
 ?>
@@ -25,7 +25,7 @@ require_once("../../templates/header.php")
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table ">
+            <table class="table" id="tabla_id">
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -35,20 +35,18 @@ require_once("../../templates/header.php")
                 </thead>
                 <tbody>
                     <?php foreach ($lista_tbl_puestos as $registro) { ?>
-                    <tr class="">
-                        <td scope="row"><?php echo $registro['id'];?></td>
-                        <td><?php echo $registro['nombredelpuesto'];?></td>
-                        <td>
-                            <a name="" id="" class="btn btn-info" 
-                            href="editar.php?txtID=<?php echo $registro['id']; ?>" role="button">Editar</a>
-                            <a name="" id="" class="btn btn-danger" 
-                            href="index.php?txtID=<?php echo $registro['id']; ?>" role="button">Eliminar</a>
-                        </td>
-                    </tr>
+                        <tr class="">
+                            <td scope="row"><?php echo $registro['id']; ?></td>
+                            <td><?php echo $registro['nombredelpuesto']; ?></td>
+                            <td>
+                                <a name="" id="" class="btn btn-info" href="editar.php?txtID=<?php echo $registro['id']; ?>" role="button">Editar</a>
+                                <a name="" id="" class="btn btn-danger" href="index.php?txtID=<?php echo $registro['id']; ?>" role="button">Eliminar</a>
+                            </td>
+                        </tr>
                     <?php } ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-<?php  require_once("../../templates/footer.php")?>
+<?php require_once("../../templates/footer.php") ?>
