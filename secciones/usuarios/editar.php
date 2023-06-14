@@ -29,13 +29,23 @@ if ($_POST){
     $sentencia->bindValue(":correo",$correo);
     $sentencia -> bindValue(":id", $txtID);
     $sentencia->execute();
-    header("location:index.php");
-    print_r($_POST);
+    
+    header("location:index.php?mensaje='Usuario editado correctamente'");
+    
 }
 ?>
 
 
-<?php require_once("../../templates/header.php")?>
+<?php require_once("../../templates/header.php");
+if (isset($_GET['mensaje'])) { ?>
+
+    <script>
+        swal.fire({
+            icon:"success", 
+            title:"<?php echo $_GET['mensaje']; ?>"
+            });
+    </script>
+    <?php } ?>
 <br>
 <div class="card">
     <div class="card-header">
@@ -73,4 +83,4 @@ if ($_POST){
 
 
 
-<?php  require_once("../../templates/footer.php")?>
+<?php require_once("../../templates/footer.php") ?>

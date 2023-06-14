@@ -10,13 +10,13 @@ if (isset($_GET["txtID"])) { // lógica para eliminar un empleado
     $sentencia->execute();
     $registro_recuperado = $sentencia->fetch(PDO::FETCH_LAZY);
     if (isset($registro_recuperado["foto"]) && $registro_recuperado["foto"] != "") {
-        if (file_exists("./img/" . $registro_recuperado["foto"])) {
-            unlink("./img/" . $registro_recuperado["foto"]);
+        if (file_exists("../empleados/fotos/" . $registro_recuperado["foto"])) {
+            unlink("../empleados/fotos/" . $registro_recuperado["foto"]);
         }
     }
     if (isset($registro_recuperado["cv"]) && $registro_recuperado["cv"] != "") {
-        if (file_exists("./cv/" . $registro_recuperado["cv"])) {
-            unlink("./cv/" . $registro_recuperado["cv"]);
+        if (file_exists("../empleados/cv/" . $registro_recuperado["cv"])) {
+            unlink("../empleados/cv/" . $registro_recuperado["cv"]);
         }
     }
 
@@ -24,7 +24,7 @@ if (isset($_GET["txtID"])) { // lógica para eliminar un empleado
     // Asignamos los valores que vienen del metodo GET a la consulta
     $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
-    header("Location:index.php");
+    header("Location:index.php?mensaje='Registro eliminado'");
 }
 
 $sentencia = $conexion->prepare("SELECT *,
@@ -36,7 +36,16 @@ FROM `tbl_empleados`");
 $sentencia->execute();
 $lista_tbl_empleados = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
-require_once("../../templates/header.php") ?>
+require_once("../../templates/header.php"); 
+if (isset($_GET['mensaje'])) { ?>
+
+<script>
+    swal.fire({
+        icon:"success", 
+        title:"<?php echo $_GET['mensaje']; ?>"
+        });
+</script>
+<?php } ?>
 <h1>Empleados</h1>
 <div class="card">
     <div class="card-header">
@@ -44,7 +53,7 @@ require_once("../../templates/header.php") ?>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table" id="tabla_id">
+            <table class="table" id="tabla_id"><!--le pongo datatables-->
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -69,10 +78,10 @@ require_once("../../templates/header.php") ?>
                             <?php echo $registro['segundoapellido']; ?>
                         </td>
                         <td>
-                            <img width="50" class="img-fluid rounded" src="./img/<?php echo $registro['foto']; ?>" />
+                            <img width="50" class="img-fluid rounded" src="../empleados/fotos/<?php echo $registro['foto'];?>" />
                         </td>
                         <td>
-                            <a href="./cv/<?php echo $registro['cv']; ?>">CV</a>
+                            <a href="../empleados/cv/ <?php echo $registro['cv']; ?>">CV</a>
 
                         </td>
                         <td>
@@ -87,7 +96,7 @@ require_once("../../templates/header.php") ?>
                             <a name="" id="" class="btn btn-info" href="editar.php?txtID=<?php echo $registro['id']; ?>"
                                 role="button">Editar</a>
                             <a name="" id="" class="btn btn-danger"
-                                href="index.php?txtID=<?php echo $registro['id']; ?>" role="button">Eliminar</a>
+                                href="javascript:borrar(<?php echo $registro['id']; ?>);" role="button">Eliminar</a>
                         </td>
                     </tr>
                     <?php } ?>
@@ -98,4 +107,26 @@ require_once("../../templates/header.php") ?>
     </div>
 
 </div>
+<script>
+    function borrar(id){
+        Swal.fire({
+    title: 'Desea borrar el empleado?',
+    text: "No vas a poder recuperarlo si lo borras!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Borralo!'
+}).then((result) => {
+    if (result.isConfirmed) {
+        window.location="index.php?txtID=" + id;
+        Swal.fire(
+        'Borrado!',
+        'El empleado ha sido borrado con exito.',
+        'Correcto'
+    )
+    
+    }
+})}
+</script>
 <?php require_once("../../templates/footer.php") ?>

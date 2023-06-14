@@ -29,7 +29,7 @@ if ($_POST) {
     $nombreArchivo_foto = ($foto != '') ? $fecha_->getTimestamp() . "_" . $_FILES["foto"]['name'] : "";
     $tmp_foto = $_FILES["foto"]['tmp_name'];
     if ($tmp_foto != '') {
-        move_uploaded_file($tmp_foto, "../empleados/img/" . $nombreArchivo_foto);
+        move_uploaded_file($tmp_foto, "../empleados/fotos/" . $nombreArchivo_foto);
     }
     $sentencia->bindValue(":foto", $nombreArchivo_foto);
 
@@ -44,12 +44,21 @@ if ($_POST) {
     $sentencia->bindValue(":fechadeingreso", $fechadeingreso);
 
     $sentencia->execute();
-    header("Location:index.php");
+    header("Location:index.php?mensaje='Empleado creado correctamente'");
 }
 $sentencia = $conexion->prepare("SELECT * FROM `tbl_puestos`");
 $sentencia->execute();
 $lista_tbl_puestos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-require_once("../../templates/header.php") ?>
+require_once("../../templates/header.php");
+if (isset($_GET['mensaje'])) { ?>
+
+    <script>
+        swal.fire({
+            icon:"success", 
+            title:"<?php echo $_GET['mensaje']; ?>"
+            });
+    </script>
+    <?php } ?> 
 
 <div class="card">
     <div class="card-header">

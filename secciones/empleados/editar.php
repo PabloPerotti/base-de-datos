@@ -34,13 +34,13 @@ if ($_POST) {
         $sentencia->execute();
         $registro_recuperado = $sentencia->fetch(PDO::FETCH_LAZY);
         if (isset($registro_recuperado["foto"]) && $registro_recuperado["foto"] != "") {
-            if (file_exists("./img/" . $registro_recuperado["foto"])) {
-                unlink("./img/" . $registro_recuperado["foto"]);
+            if (file_exists("../empleados/fotos/" . $registro_recuperado["foto"])) {
+                unlink("../empleados/fotos/" . $registro_recuperado["foto"]);
             }
         }
         if (isset($registro_recuperado["cv"]) && $registro_recuperado["cv"] != "") {
-            if (file_exists("./cv/" . $registro_recuperado["cv"])) {
-                unlink("./cv/" . $registro_recuperado["cv"]);
+            if (file_exists("../empleados/cv" . $registro_recuperado["cv"])) {
+                unlink("../empleados/cv" . $registro_recuperado["cv"]);
             }
         }
     }
@@ -71,14 +71,14 @@ if ($_POST) {
     $nombreArchivo_foto = ($foto != '') ? $fecha_->getTimestamp() . "_" . $_FILES["foto"]['name'] : "";
     $tmp_foto = $_FILES["foto"]['tmp_name'];
     if ($tmp_foto != '') {
-        move_uploaded_file($tmp_foto, "./img/" . $nombreArchivo_foto);
+        move_uploaded_file($tmp_foto, "../empleados/fotos/" . $nombreArchivo_foto);
     }
     $sentencia->bindValue(":foto", $nombreArchivo_foto);
 
     $nombreArchivo_cv = ($cv != '') ? $fecha_->getTimestamp() . "_" . $_FILES["cv"]['name'] : "";
     $tmp_cv = $_FILES["cv"]['tmp_name'];
     if ($tmp_cv != '') {
-        move_uploaded_file($tmp_cv, "./cv/" . $nombreArchivo_cv);
+        move_uploaded_file($tmp_cv, "../empleados/cv/" . $nombreArchivo_cv);
     }
     $sentencia->bindValue(":cv", $nombreArchivo_cv);
 
@@ -86,12 +86,21 @@ if ($_POST) {
     $sentencia->bindValue(":fechadeingreso", $fechadeingreso);
     $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
-    header("Location:index.php");
+    header("Location:index.php?mensaje='Empleado editado correctamente'");
 }
 $sentencia = $conexion->prepare("SELECT * FROM `tbl_puestos`");
 $sentencia->execute();
 $lista_tbl_puestos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-require_once("../../templates/header.php") ?>
+require_once("../../templates/header.php");
+if (isset($_GET['mensaje'])) { ?>
+
+    <script>
+        swal.fire({
+            icon:"success", 
+            title:"<?php echo $_GET['mensaje']; ?>"
+            });
+    </script>
+    <?php } ?> 
 <br>
 <div class="card">
     <div class="card-header">
@@ -119,13 +128,13 @@ require_once("../../templates/header.php") ?>
                 <label for="segundoapellido" class="form-label">Segundo Apellido</label>
                 <input type="text" class="form-control" name="segundoapellido" id="segundoapellido"
                     aria-describedby="helpId" value="<?php echo $segundoapellido; ?>">
-
+                <br>
                 <label for="foto" class="form-label">Foto: </label>
-                <img width="50" class="img-fluid rounded" src="./img/<?php echo $registro['foto']; ?>" />
+                <img width="50" class="img-fluid rounded" src="../empleados/fotos/<?php echo $registro['foto']; ?>" />
                 <input type="file" class="form-control" name="foto" id="foto" aria-describedby="helpId" value="">
-
+                
                 <label for="cv" class="form-label">CV</label>
-                <a href="./cv/<?php echo $registro['cv']; ?>">CV</a>
+                <a href="../empleados/cv/<?php echo $registro['cv']; ?>">CV</a>
                 <input type="file" class="form-control" name="cv" id="cv" aria-describedby="helpId" value="">
 
                 <div class="mb-3">
@@ -153,7 +162,7 @@ require_once("../../templates/header.php") ?>
                     aria-describedby="helpId" value="<?php echo $fechadeingreso; ?>">
             </div>
 
-            <button type="submit" name="" id="" class="btn btn-primary" role="button">Agregar registro</button>
+            <button type="submit" name="" id="" class="btn btn-primary" role="button">Modificar registro</button>
             <a name="" id="" class="btn btn-danger" href="./index.php" role="button">Cancelar</a>
         </form>
     </div>

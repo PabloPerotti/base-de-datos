@@ -6,7 +6,7 @@ if (isset($_GET["txtID"])) {
     $sentencia = $conexion->prepare("DELETE FROM `tbl_puestos` WHERE `id`=:id");
     $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
-    header("location:index.php");
+    header("location:index.php?mensaje='Puesto eliminado Correctamente'");
 }
 $sentencia = $conexion->prepare("SELECT * FROM `tbl_puestos`");
 $sentencia->execute();
@@ -14,9 +14,18 @@ $lista_tbl_puestos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <?php
-require_once("../../templates/header.php")
+require_once("../../templates/header.php");
+if (isset($_GET['mensaje'])) { ?>
 
-?>
+    <script>
+        swal.fire({
+            icon:"success", 
+            title:"<?php echo $_GET['mensaje']; ?>"
+            });
+    </script>
+    <?php } ?>
+
+
 <br>
 <h1>Puestos</h1>
 <div class="card">
@@ -40,7 +49,7 @@ require_once("../../templates/header.php")
                             <td><?php echo $registro['nombredelpuesto']; ?></td>
                             <td>
                                 <a name="" id="" class="btn btn-info" href="editar.php?txtID=<?php echo $registro['id']; ?>" role="button">Editar</a>
-                                <a name="" id="" class="btn btn-danger" href="index.php?txtID=<?php echo $registro['id']; ?>" role="button">Eliminar</a>
+                                <a name="" id="" class="btn btn-danger" href="javascript:borrar(<?php echo $registro['id']; ?>);" role="button">Eliminar</a>
                             </td>
                         </tr>
                     <?php } ?>
@@ -49,4 +58,26 @@ require_once("../../templates/header.php")
         </div>
     </div>
 </div>
+<script>
+    function borrar(id){
+        Swal.fire({
+    title: 'Desea borrar el puesto?',
+    text: "No vas a poder recuperarlo si lo borras!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Borralo!'
+}).then((result) => {
+    if (result.isConfirmed) {
+        window.location="index.php?txtID=" + id;
+        Swal.fire(
+        'Borrado!',
+        'El puesto ha sido borrado con exito.',
+        'Correcto'
+    )
+    
+    }
+})}
+</script>
 <?php require_once("../../templates/footer.php") ?>

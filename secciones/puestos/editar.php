@@ -17,11 +17,20 @@ if ($_POST){
     $sentencia->bindValue(":nombredelpuesto",$nombredelpuesto);
     $sentencia -> bindValue(":id", $txtID);
     $sentencia->execute();
-    header("location:index.php");
+    header("location:index.php?mensaje='Puesto editado correctamente'");
 }
 ?>
 
-<?php require_once("../../templates/header.php");?>
+<?php require_once("../../templates/header.php");
+if (isset($_GET['mensaje'])) { ?>
+
+    <script>
+        swal.fire({
+            icon:"success", 
+            title:"<?php echo $_GET['mensaje']; ?>"
+            });
+    </script>
+    <?php } ?>
 <br>
 <div class="card">
     <div class="card-header">

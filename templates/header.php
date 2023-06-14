@@ -1,5 +1,9 @@
 <?php
-$url_base = "http://localhost/app/"
+session_start();
+$url_base = "http://localhost/base-de-datos/";
+if (!isset($_SESSION['usuario'])) {
+    header("Location:".$url_base."login.php"); 
+}
     ?>
 
 <!doctype html>
@@ -21,6 +25,9 @@ $url_base = "http://localhost/app/"
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
 
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
 </head>
 
 <body>
@@ -28,7 +35,7 @@ $url_base = "http://localhost/app/"
         <nav class="navbar navbar-expand navbar-light bg-light">
             <ul class="nav navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" aria-current="page">Sistema <span
+                    <a class="nav-link active" href="<?php echo $url_base ?>login.php" aria-current="page">Sistema <span
                             class="visually-hidden">(current)</span></a>
                 </li>
                 <li class="nav-item">
@@ -41,7 +48,7 @@ $url_base = "http://localhost/app/"
                     <a class="nav-link" href="<?php echo $url_base ?>secciones/usuarios">Usuarios</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Cerrar Sesion</a>
+                    <a class="nav-link" href="<?php echo $url_base ?>cerrar.php">Cerrar Sesion</a>
                 </li>
             </ul>
         </nav>
